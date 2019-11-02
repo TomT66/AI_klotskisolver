@@ -11,8 +11,11 @@ import org.neuroph.core.NeuralNetwork;
 import org.neuroph.core.Neuron;
 import org.neuroph.core.data.DataSet;
 import org.neuroph.core.data.DataSetRow;
+import org.neuroph.nnet.MultiLayerPerceptron;
 import org.neuroph.nnet.learning.BackPropagation;
+import org.neuroph.nnet.learning.MomentumBackpropagation;
 import org.neuroph.util.ConnectionFactory;
+import org.neuroph.util.TransferFunctionType;
 
 public class Solver {
 
@@ -92,8 +95,6 @@ public class Solver {
 								State state = new State();
 								temp.assign(state);
 								state.preStateNr = i;
-								//state.set_posofMovedBlockInPrestate(states.get(i).bigblock);
-								//state.set_movDirectionForMovedBlockInPrestate("up");
 								states.add(state);
 								mapSet.add(state.mapToArrayList());
 							}
@@ -315,90 +316,15 @@ public class Solver {
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public void AIStrate() {
-		NeuralNetwork nn = new NeuralNetwork();
 		int inputSize = 20;
 		int outputSize = 24;
 		DataSet ds = new DataSet(inputSize, outputSize);
-			
-		Layer inputLayer = new Layer();
-		inputLayer.addNeuron(new Neuron());		//position(0,0) on the board
-		inputLayer.addNeuron(new Neuron());
-		inputLayer.addNeuron(new Neuron());
-		inputLayer.addNeuron(new Neuron());
-		inputLayer.addNeuron(new Neuron());
-		inputLayer.addNeuron(new Neuron());
-		inputLayer.addNeuron(new Neuron());
-		inputLayer.addNeuron(new Neuron());
-		inputLayer.addNeuron(new Neuron());
-		inputLayer.addNeuron(new Neuron());
-		inputLayer.addNeuron(new Neuron());
-		inputLayer.addNeuron(new Neuron());
-		inputLayer.addNeuron(new Neuron());
-		inputLayer.addNeuron(new Neuron());
-		inputLayer.addNeuron(new Neuron());
-		inputLayer.addNeuron(new Neuron());
-		inputLayer.addNeuron(new Neuron());
-		inputLayer.addNeuron(new Neuron());
-		inputLayer.addNeuron(new Neuron());
-		inputLayer.addNeuron(new Neuron());		//position(3,4) on the board
 		
-		Layer outputLayer = new Layer();
-		outputLayer.addNeuron(new Neuron());	//position(0,0) on the board
-		outputLayer.addNeuron(new Neuron());
-		outputLayer.addNeuron(new Neuron());
-		outputLayer.addNeuron(new Neuron());
-		outputLayer.addNeuron(new Neuron());
-		outputLayer.addNeuron(new Neuron());
-		outputLayer.addNeuron(new Neuron());
-		outputLayer.addNeuron(new Neuron());
-		outputLayer.addNeuron(new Neuron());
-		outputLayer.addNeuron(new Neuron());
-		outputLayer.addNeuron(new Neuron());
-		outputLayer.addNeuron(new Neuron());
-		outputLayer.addNeuron(new Neuron());
-		outputLayer.addNeuron(new Neuron());
-		outputLayer.addNeuron(new Neuron());
-		outputLayer.addNeuron(new Neuron());
-		outputLayer.addNeuron(new Neuron());
-		outputLayer.addNeuron(new Neuron());
-		outputLayer.addNeuron(new Neuron());	
-		outputLayer.addNeuron(new Neuron());	//position(3,4) on the board
-		outputLayer.addNeuron(new Neuron());	//move up
-		outputLayer.addNeuron(new Neuron());	//move down
-		outputLayer.addNeuron(new Neuron());	//move left
-		outputLayer.addNeuron(new Neuron());	//move right
-
-		Layer hiddenLayer1 = new Layer();
-		hiddenLayer1.addNeuron(new Neuron());
-		hiddenLayer1.addNeuron(new Neuron());
-		hiddenLayer1.addNeuron(new Neuron());
-		hiddenLayer1.addNeuron(new Neuron());
-		hiddenLayer1.addNeuron(new Neuron());
-		hiddenLayer1.addNeuron(new Neuron());
+		MultiLayerPerceptron neuralNet = new MultiLayerPerceptron(TransferFunctionType.SIGMOID, 20, 15, 30, 24);
 		
-		Layer hiddenLayer2 = new Layer();
-		hiddenLayer2.addNeuron(new Neuron());
-		hiddenLayer2.addNeuron(new Neuron());
-		hiddenLayer2.addNeuron(new Neuron());
-		hiddenLayer2.addNeuron(new Neuron());
-		hiddenLayer2.addNeuron(new Neuron());
-		hiddenLayer2.addNeuron(new Neuron());
-		hiddenLayer2.addNeuron(new Neuron());
-		hiddenLayer2.addNeuron(new Neuron());	
-		
-		nn.addLayer(0, inputLayer);
-		nn.addLayer(1,hiddenLayer1);
-		ConnectionFactory.fullConnect(nn.getLayerAt(0), nn.getLayerAt(1));
-		nn.addLayer(2,hiddenLayer2);
-		ConnectionFactory.fullConnect(nn.getLayerAt(1), nn.getLayerAt(2));
-		nn.addLayer(3, outputLayer);
-		ConnectionFactory.fullConnect(nn.getLayerAt(2), nn.getLayerAt(3),true);
-		nn.setInputNeurons(inputLayer.getNeurons());
-		nn.setOutputNeurons(outputLayer.getNeurons());
-	
-
+        
 		//long startTime = System.currentTimeMillis();
-	//train function starts
+		//train function starts
 		int flag = 2;    // 1 means solved, 0 means not solved
 		ArrayList<State> states = new ArrayList<State>();
 		Set<ArrayList> mapSet = new HashSet<ArrayList>();
@@ -406,14 +332,12 @@ public class Solver {
 		State state0 = new State();
 		
 		state0.initialBlocks(new int[]{1,4,4,1,0,1,2,0,0,3,0,0,2,3,2,0,4,1,3,2,3,3,4,}); //the classic klotski
-		//state0.initialBlocks(inputArgs());		//user inputs his own Klotski puzzle
 		state0.setMap();
 		states.add(state0);
 		mapSet.add(state0.mapToArrayList());
 		
 		//System.out.println("start solving with bruteforce strategy...");
 		for(int i=0; i<500000; i++) {
-			flag = 1;
 			if(flag == 1) break;
 			//bigblock move posibility, detector tells if it is able to go up/down/left/right,  
 			//a new state is stored in "states" if same map hasn't been searched
@@ -425,8 +349,8 @@ public class Solver {
 								State state = new State();
 								temp.assign(state);
 								state.preStateNr = i;
-								state.set_posofMovedBlockofPrestate(states.get(i).bigblock);
-								state.set_movDirectionForMovedBlockOfPrestate("up");
+								state.set_preMovedBlock(states.get(i).bigblock);
+								state.set_preMvDirction("up");
 								states.add(state);
 								mapSet.add(state.mapToArrayList());
 							}
@@ -438,8 +362,8 @@ public class Solver {
 								State state = new State();
 								temp.assign(state);
 								state.preStateNr = i;
-								state.set_posofMovedBlockofPrestate(states.get(i).bigblock);
-								state.set_movDirectionForMovedBlockOfPrestate("down");
+								state.set_preMovedBlock(states.get(i).bigblock);
+								state.set_preMvDirction("down");
 								states.add(state);
 								mapSet.add(state.mapToArrayList());
 							}
@@ -451,8 +375,8 @@ public class Solver {
 								State state = new State();
 								temp.assign(state);
 								state.preStateNr = i;
-								state.set_posofMovedBlockofPrestate(states.get(i).bigblock);
-								state.set_movDirectionForMovedBlockOfPrestate("left");
+								state.set_preMovedBlock(states.get(i).bigblock);
+								state.set_preMvDirction("left");
 								states.add(state);
 								mapSet.add(state.mapToArrayList());
 							}
@@ -464,8 +388,8 @@ public class Solver {
 								State state = new State();
 								temp.assign(state);
 								state.preStateNr = i;
-								state.set_posofMovedBlockofPrestate(states.get(i).bigblock);
-								state.set_movDirectionForMovedBlockOfPrestate("right");
+								state.set_preMovedBlock(states.get(i).bigblock);
+								state.set_preMvDirction("right");
 								states.add(state);
 								mapSet.add(state.mapToArrayList());
 							}break;
@@ -481,8 +405,8 @@ public class Solver {
 									State state = new State();
 									temp.assign(state);
 									state.preStateNr = i;
-									state.set_posofMovedBlockofPrestate(states.get(i).lyblock[id]);
-									state.set_movDirectionForMovedBlockOfPrestate("up");
+									state.set_preMovedBlock(states.get(i).lyblock[id]);
+									state.set_preMvDirction("up");
 									states.add(state);
 									mapSet.add(state.mapToArrayList());
 								}
@@ -494,8 +418,8 @@ public class Solver {
 									State state = new State();
 									temp.assign(state);
 									state.preStateNr = i;
-									state.set_posofMovedBlockofPrestate(states.get(i).lyblock[id]);
-									state.set_movDirectionForMovedBlockOfPrestate("down");
+									state.set_preMovedBlock(states.get(i).lyblock[id]);
+									state.set_preMvDirction("down");
 									states.add(state);
 									mapSet.add(state.mapToArrayList());
 								}
@@ -509,8 +433,8 @@ public class Solver {
 						State state = new State();
 						temp.assign(state);
 						state.preStateNr = i;
-						state.set_posofMovedBlockofPrestate(states.get(i).lyblock[id]);
-						state.set_movDirectionForMovedBlockOfPrestate("right");
+						state.set_preMovedBlock(states.get(i).lyblock[id]);
+						state.set_preMvDirction("right");
 						states.add(state);
 						mapSet.add(state.mapToArrayList());
 					}
@@ -523,8 +447,8 @@ public class Solver {
 						State state = new State();
 						temp.assign(state);
 						state.preStateNr = i;
-						state.set_posofMovedBlockofPrestate(states.get(i).lyblock[id]);
-						state.set_movDirectionForMovedBlockOfPrestate("left");
+						state.set_preMovedBlock(states.get(i).lyblock[id]);
+						state.set_preMvDirction("left");
 						states.add(state);
 						mapSet.add(state.mapToArrayList());
 					}
@@ -541,8 +465,8 @@ public class Solver {
 									State state = new State();
 									temp.assign(state);
 									state.preStateNr = i;
-									state.set_posofMovedBlockofPrestate(states.get(i).stndblock[id]);
-									state.set_movDirectionForMovedBlockOfPrestate("left");
+									state.set_preMovedBlock(states.get(i).stndblock[id]);
+									state.set_preMvDirction("left");
 									states.add(state);
 									mapSet.add(state.mapToArrayList());
 								}
@@ -554,8 +478,8 @@ public class Solver {
 									State state = new State();
 									temp.assign(state);
 									state.preStateNr = i;
-									state.set_posofMovedBlockofPrestate(states.get(i).stndblock[id]);
-									state.set_movDirectionForMovedBlockOfPrestate("right");
+									state.set_preMovedBlock(states.get(i).stndblock[id]);
+									state.set_preMvDirction("right");
 									states.add(state);
 									mapSet.add(state.mapToArrayList());
 								}
@@ -569,8 +493,8 @@ public class Solver {
 						State state = new State();
 						temp.assign(state);
 						state.preStateNr = i;
-						state.set_posofMovedBlockofPrestate(states.get(i).stndblock[id]);
-						state.set_movDirectionForMovedBlockOfPrestate("up");
+						state.set_preMovedBlock(states.get(i).stndblock[id]);
+						state.set_preMvDirction("up");
 						states.add(state);
 						mapSet.add(state.mapToArrayList());
 					}
@@ -583,8 +507,8 @@ public class Solver {
 						State state = new State();
 						temp.assign(state);
 						state.preStateNr = i;
-						state.set_posofMovedBlockofPrestate(states.get(i).stndblock[id]);
-						state.set_movDirectionForMovedBlockOfPrestate("down");
+						state.set_preMovedBlock(states.get(i).stndblock[id]);
+						state.set_preMvDirction("down");
 						states.add(state);
 						mapSet.add(state.mapToArrayList());
 					}
@@ -600,8 +524,8 @@ public class Solver {
 						State state = new State();
 						temp.assign(state);
 						state.preStateNr = i;
-						state.set_posofMovedBlockofPrestate(states.get(i).smlblock[id]);
-						state.set_movDirectionForMovedBlockOfPrestate("up");
+						state.set_preMovedBlock(states.get(i).smlblock[id]);
+						state.set_preMvDirction("up");
 						states.add(state);
 						mapSet.add(state.mapToArrayList());
 					}
@@ -614,8 +538,8 @@ public class Solver {
 						State state = new State();
 						temp.assign(state);
 						state.preStateNr = i;
-						state.set_posofMovedBlockofPrestate(states.get(i).smlblock[id]);
-						state.set_movDirectionForMovedBlockOfPrestate("down");
+						state.set_preMovedBlock(states.get(i).smlblock[id]);
+						state.set_preMvDirction("down");
 						states.add(state);
 						mapSet.add(state.mapToArrayList());
 					}
@@ -628,8 +552,8 @@ public class Solver {
 						State state = new State();
 						temp.assign(state);
 						state.preStateNr = i;
-						state.set_posofMovedBlockofPrestate(states.get(i).smlblock[id]);
-						state.set_movDirectionForMovedBlockOfPrestate("right");
+						state.set_preMovedBlock(states.get(i).smlblock[id]);
+						state.set_preMvDirction("right");
 						states.add(state);
 						mapSet.add(state.mapToArrayList());
 					}
@@ -642,23 +566,25 @@ public class Solver {
 						State state = new State();
 						temp.assign(state);
 						state.preStateNr = i;
-						state.set_posofMovedBlockofPrestate(states.get(i).smlblock[id]);
-						state.set_movDirectionForMovedBlockOfPrestate("left");
+						state.set_preMovedBlock(states.get(i).smlblock[id]);
+						state.set_preMvDirction("left");
 						states.add(state);
 						mapSet.add(state.mapToArrayList());
 					}
 				}
 			}//smallblock move posibility
+			
 			//check if bigblock reaches the escape point, yes->show and break, not->continue
-			/*for(int m=i ;m<states.size() ;m++) {
+			for(int m=i ;m<states.size() ;m++) {
 				if(states.get(m).bigblock.positionX==1 && states.get(m).bigblock.positionY==3) {
-					System.out.println("brute done, train dataset");
+					System.out.println("brute done, get dataset from it");
 					int index = states.get(m).preStateNr;
 					int step = 0;
 					while(index!=0) {
-						ArrayList<Double> desiredOutput = (ArrayList) Arrays.stream(states.get(m).get_preMovBlockPositionForNN()).boxed().collect(Collectors.toList());
-						desiredOutput.addAll((ArrayList) Arrays.stream(states.get(m).get_preMovDirectionForNN()).boxed().collect(Collectors.toList()));
-						ArrayList<Double> input = states.get(index).mapToNeuroInput();
+						
+						ArrayList<Double> desiredOutput = states.get(index).preStateNeuroInput();
+						desiredOutput.addAll(states.get(index).get_preMovDirection());
+						ArrayList<Double> input = states.get(states.get(index).preStateNr).mapToNeuroInput();
 						DataSetRow dsr = new DataSetRow(input, desiredOutput);
 						System.out.println(step++);
 						for(double value : input) {
@@ -675,35 +601,34 @@ public class Solver {
 					flag = 1;
 					break;
 				}
-			}*/
+			}
 		}
-		ArrayList<Double> input = new ArrayList<Double>(Arrays.asList(3.0, 1.0, 1.0, 3.0, 3.0, 1.0, 1.0, 3.0, 3.0, 2.0, 2.0, 3.0, 3.0, 4.0, 4.0, 3.0, 0.0, 4.0, 0.0, 4.0 ));
-		ArrayList<Double> desiredoutput = new ArrayList<Double>(Arrays.asList(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0));
-		DataSetRow dsr = new DataSetRow(input, desiredoutput);
-		ds.add(dsr);
-		BackPropagation backPropagation = new BackPropagation();
-		backPropagation.setMaxIterations(1);
+		
+        MomentumBackpropagation learningRule = (MomentumBackpropagation) neuralNet.getLearningRule();
+        learningRule.setLearningRate(0.7);
+        learningRule.setMomentum(0.8);
+        
+        double[] intry = {3.0, 1.0, 1.0, 3.0, 3.0, 1.0, 1.0, 3.0, 3.0, 2.0, 2.0, 3.0, 3.0, 4.0, 4.0, 3.0, 4.0, 0.0, 0.0, 4.0}; 
+        double[] outry = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0};
+        DataSet dstry = new DataSet(20, 24);
+        DataSetRow dsrtry = new DataSetRow(intry, outry);
+		dstry.add(dsrtry);
+        
 		System.out.println("start learning");
-		nn.learn(ds, backPropagation);
-		//long endTime = System.currentTimeMillis();
-		//System.out.println("searching took " + (endTime - startTime) + " milliseconds");
+		long startTime = System.currentTimeMillis();
+		neuralNet.learn(ds);
+		long endTime = System.currentTimeMillis();
+		System.out.println("training took " + (endTime - startTime) + " milliseconds");
 		System.out.println("train finish. plz input your klotski puzzle");
 		
 		State newGame = new State();
 		double[] newGameInput = new double[20];
 		newGame.initialBlocks(new int[]{3,1,1,3,3,1,1,3,3,2,2,3,3,4,4,3,0,4,0,4});
-		for(int i=0; i<20; i++) {
-			newGameInput[i] = (double) newGame.mapToNeuroInput().get(i);
-		}
-		for(double value : newGameInput) {
-			
-		}
-		nn.setInput(newGameInput);
-		nn.calculate();
-		double[] networkOutput = nn.getOutput();
-		for(double value : networkOutput) {
-			System.out.print((int)value + ", ");
-		}
+		
+		neuralNet.setInput(3,1,1,3,3,1,1,3,3,2,2,3,3,4,4,3,0,4,0,4);
+		neuralNet.calculate();
+		double[] networkOutput = neuralNet.getOutput();
+		System.out.println(" Output: " + Arrays.toString(networkOutput));
 }
 
 	public static void main(String[] args){

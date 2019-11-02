@@ -1,5 +1,6 @@
 package com.tomsSolver.maven.neuroSolver;
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class State {
 	int numOfLyblock;
@@ -13,39 +14,40 @@ public class State {
 	LongLyingBlock[] lyblock = new LongLyingBlock[10];
 	LongStandingBlock[] stndblock = new LongStandingBlock[10];
 	SmallBlock[] smlblock = new SmallBlock[10];
+
+	String preMvDirction;
 	
-	int[] movedBlockPosInPrestate = new int[2] ;
-	String blockMovDirectionInPrestate = new String();
-
-	public void set_posofMovedBlockofPrestate(Block block) {
-		this.movedBlockPosInPrestate[0] = block.positionX;
-		this.movedBlockPosInPrestate[1] = block.positionY;
+	public void set_preMvDirction(String direction) {
+		this.preMvDirction = direction;
 	}
-
-	public double[] get_preMovBlockPositionForNN() {
-		double[] result = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
-		result[this.movedBlockPosInPrestate[0] + 4 * this.movedBlockPosInPrestate[1]] = 1;
+	
+	public ArrayList get_preMovDirection() {
+		ArrayList<Double> result = new ArrayList<Double>();
+		if(this.preMvDirction == "up"){
+			Collections.addAll(result, 1.0, 0.0, 0.0, 0.0);
+		}
+		else if(this.preMvDirction == "down") {
+			Collections.addAll(result, 0.0, 1.0, 0.0, 0.0);
+		}
+		else if(this.preMvDirction == "left") {
+			Collections.addAll(result, 0.0, 0.0, 1.0, 0.0);
+		}
+		else if(this.preMvDirction == "right") {
+			Collections.addAll(result, 0.0, 0.0, 0.0, 1.0);
+		}
 		return result;
 	}
-
-	public void set_movDirectionForMovedBlockOfPrestate(String direction) {
-		this.blockMovDirectionInPrestate = direction;
+	
+	Block preMovedBlock = new Block();
+	
+	public void set_preMovedBlock(Block block) {
+		this.preMovedBlock = block;
 	}
-
-	public double[] get_preMovDirectionForNN() {
-		double[] result = {0,0,0,0};
-		if(this.blockMovDirectionInPrestate == "up"){
-			result[0] = 1;
-		}
-		else if(this.blockMovDirectionInPrestate == "down") {
-			result[1] = 1;
-		}
-		else if(this.blockMovDirectionInPrestate == "right") {
-			result[2] = 1;
-		}
-		else if(this.blockMovDirectionInPrestate == "left") {
-			result[3] = 1;
-		}
+	
+	public ArrayList preStateNeuroInput() {
+		ArrayList<Double> result = new ArrayList<Double>();
+		Collections.addAll(result, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+		result.set(this.preMovedBlock.positionX + 4 * this.preMovedBlock.positionY, 1.0);
 		return result;
 	}
 	
