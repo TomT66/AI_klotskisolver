@@ -608,11 +608,11 @@ public class Solver {
         learningRule.setLearningRate(0.7);
         learningRule.setMomentum(0.8);
         
-        double[] intry = {3.0, 1.0, 1.0, 3.0, 3.0, 1.0, 1.0, 3.0, 3.0, 2.0, 2.0, 3.0, 3.0, 4.0, 4.0, 3.0, 4.0, 0.0, 0.0, 4.0}; 
+        /*double[] intry = {3.0, 1.0, 1.0, 3.0, 3.0, 1.0, 1.0, 3.0, 3.0, 2.0, 2.0, 3.0, 3.0, 4.0, 4.0, 3.0, 4.0, 0.0, 0.0, 4.0}; 
         double[] outry = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0};
         DataSet dstry = new DataSet(20, 24);
         DataSetRow dsrtry = new DataSetRow(intry, outry);
-		dstry.add(dsrtry);
+		dstry.add(dsrtry);*/
         
 		System.out.println("start learning");
 		long startTime = System.currentTimeMillis();
