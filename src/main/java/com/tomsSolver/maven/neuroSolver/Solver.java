@@ -581,7 +581,6 @@ public class Solver {
 					int index = states.get(m).preStateNr;
 					int step = 0;
 					while(index!=0) {
-						
 						ArrayList<Double> desiredOutput = states.get(index).preStateNeuroInput();
 						desiredOutput.addAll(states.get(index).get_preMovDirection());
 						ArrayList<Double> input = states.get(states.get(index).preStateNr).mapToNeuroInput();
@@ -597,6 +596,7 @@ public class Solver {
 						System.out.println();
 						ds.add(dsr);
 						index = states.get(index).preStateNr;
+						if(step == 17) break;
 					}
 					flag = 1;
 					break;
@@ -608,11 +608,13 @@ public class Solver {
         learningRule.setLearningRate(0.7);
         learningRule.setMomentum(0.8);
         
-        /*double[] intry = {3.0, 1.0, 1.0, 3.0, 3.0, 1.0, 1.0, 3.0, 3.0, 2.0, 2.0, 3.0, 3.0, 4.0, 4.0, 3.0, 4.0, 0.0, 0.0, 4.0}; 
+        /*
+        double[] intry = {3.0, 1.0, 1.0, 3.0, 3.0, 1.0, 1.0, 3.0, 3.0, 2.0, 2.0, 3.0, 3.0, 4.0, 4.0, 3.0, 4.0, 0.0, 0.0, 4.0}; 
         double[] outry = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0};
         DataSet dstry = new DataSet(20, 24);
         DataSetRow dsrtry = new DataSetRow(intry, outry);
-		dstry.add(dsrtry);*/
+		dstry.add(dsrtry);
+		*/
         
 		System.out.println("start learning");
 		long startTime = System.currentTimeMillis();
